@@ -1,51 +1,38 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import Star from "./Star";
 import PropTypes from 'prop-types';
 
 
-class Rating extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      current: this.props.defaultRating,
-      hover: -1,
-    }
-  }
+function Rating(props) {
 
-  setSelected = (index) => {
-    const { clearRating, ratingValue, onChange } = this.props;
-    const { current } = this.state;
+
+  const [current,setCurrent] = useState(props.defaultRating);
+  const [hover,setHover] = useState(-1)
+
+  const setSelected = (index) => {
+    const { clearRating, ratingValue, onChange } = props;
+
     if (clearRating && (current === index + 1)) {
-      this.setState({
-        current: 0,
-        hover: -1
-      })
+      setCurrent(0);
+      setHover(-1);
       onChange(0, "-");
     } else {
-      this.setState({
-        current: index + 1
-      })
+      setCurrent(index+1)
       onChange(index + 1, ratingValue ? ratingValue[index] : "");
     }
 
   }
 
-  onHover = (index) => {
-    this.setState({
-      hover: index + 1
-    })
+  const  onHover = (index) => {
+    setHover(index+1);
   }
 
-  onMouseLeave = () => {
-    this.setState({
-      hover: -1
-    })
+  const onMouseLeave = () => {
+    setHover(-1);
   }
 
-  render() {
-    const { max, counterPosition, textPosition, tooltipContent, ratingValue, styleConfig, disabled} = this.props;
-    const { current, hover } = this.state;
+    const { max, counterPosition, textPosition, tooltipContent, ratingValue, styleConfig, disabled} = props;
     const stars = new Array(max);
     const currentValue = hover >= 0 ? hover : current
     for (let i = 0; i < stars.length; i++) {
@@ -54,12 +41,12 @@ class Rating extends Component {
         tpText={tooltipContent && tooltipContent[i] ? tooltipContent[i] : null}
         selected={i < currentValue ? true : false}
         key={i}
-        onMouseLeave={disabled ? ()=>{} : this.onMouseLeave}
-        onHover={disabled ? ()=>{} : this.onHover}
+        onMouseLeave={disabled ? ()=>{} : onMouseLeave}
+        onHover={disabled ? ()=>{} : onHover}
         index={i}
-        selectStar={disabled ? ()=>{} : this.setSelected}
-        InActiveComponent={this.props.InActiveComponent}
-        ActiveComponent={this.props.ActiveComponent}
+        selectStar={disabled ? ()=>{} : setSelected}
+        InActiveComponent={props.InActiveComponent}
+        ActiveComponent={props.ActiveComponent}
       />;
     }
     if (counterPosition) {
@@ -91,7 +78,7 @@ class Rating extends Component {
       </div>
     );
   }
-}
+
 
 Rating.propTypes = {
   max: PropTypes.number.isRequired,
